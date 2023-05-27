@@ -2,9 +2,20 @@
 
 {% extends 'eLibrary/layout.html' %}
 
-
 {% block body %}
-
-    <h2>Display all items</h2>
-
+<div class="table-container">
+    <table class="item-table">
+        <tbody>
+            {% for book in books %}
+                {% if forloop.counter0|divisibleby:5 %}
+                    <tr>  <!-- Start a new row after every 5 books -->
+                {% endif %}
+                <td>{{ book.title }}</td>
+                {% if forloop.counter|divisibleby:5 or forloop.last %}
+                    </tr>  <!-- Close the row after every 5 books or if it's the last book -->
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

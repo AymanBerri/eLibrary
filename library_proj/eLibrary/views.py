@@ -3,13 +3,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from .models import Book
 
 
 # Create your views here.
 
 def home(request):
+    books = Book.objects.all()
+
     return render(request, 'eLibrary/home.html', {
-        
+        'books': books,
     })
 
 
