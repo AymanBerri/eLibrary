@@ -21,8 +21,9 @@ def book_view(request, book_title):
     book = get_object_or_404(Book, title=book_title)
 
     if request.method == 'POST':
+        print(f">>>>>>>>>>>>>>>>>>>> {request.POST}")
         # Get the user's profile
-        user_profile = request.user.profile
+        user_profile = Profile.objects.get(user=request.user)
 
         # Add the book to the user's my_books
         user_profile.my_books.add(book)
@@ -73,6 +74,9 @@ def register_view(request):
 
         # Create a new user
         user = User.objects.create_user(username=username, password=password, email=email)
+
+        # Create a new profile for the user
+        profile = Profile.objects.create(user=user, email=email)
 
         # # Optionally, you can perform additional tasks such as login the user
         login(request, user)

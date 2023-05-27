@@ -14,7 +14,7 @@ class Book(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField()
-    my_books = models.ManyToManyField(Book, related_name="book_holders")    # watchlist
+    my_books = models.ManyToManyField(Book, related_name="book_holders", blank=True)    # watchlist
 
     def __str__(self):
         return f"{self.pk} {self.user}"
