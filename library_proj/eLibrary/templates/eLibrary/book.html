@@ -1,0 +1,23 @@
+{% extends 'eLibrary/layout.html' %}
+
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h1>{{ book.title }}</h1>
+        <p class="mt-4"><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+        <p><strong>Genre:</strong> {{ book.genre }}</p>
+        <p><strong>Publish Date:</strong> {{ book.publish_date }}</p>
+
+        <form method="POST" action="{% url 'eLibrary:book_view' book.title %}">
+          {% csrf_token %}
+          <input type="submit" value="Add to Watchlist" class="btn btn-primary mt-5">
+        </form>
+
+        <a href="#" class="btn btn-secondary mt-2">Update Book</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

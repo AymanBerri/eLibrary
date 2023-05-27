@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Book
+from .models import Book, Profile
+
 
 
 # Create your views here.
@@ -14,6 +15,23 @@ def home(request):
     return render(request, 'eLibrary/home.html', {
         'books': books,
     })
+
+def book_view(request, book_title):
+    # Retrieve the specific book based on the title
+    book = get_object_or_404(Book, title=book_title)
+
+    if request.method == 'POST':
+        # Get the user's profile
+        user_profile = request.user.profile
+
+        # Add the book to the user's my_books
+        user_profile.my_books.add(book)
+        messages.success(request, 'Book added to your watchlist.')
+
+        return redirect('eLibrary:home')
+
+    return render(request, 'eLibrary/book.html', {'book': book})
+
 
 
 def login_view(request):
