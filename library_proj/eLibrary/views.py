@@ -1,3 +1,5 @@
+from datetime import datetime
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -9,12 +11,16 @@ from .models import Book, Profile
 
 # Create your views here.
 
+@login_required
+@user_passes_test(lambda u: u.is_authenticated, login_url='eLibrary:login') # if user directly puts the home link without loggin in, he is directly directed to login
 def home(request):
     books = Book.objects.all()
 
     return render(request, 'eLibrary/home.html', {
         'books': books,
     })
+
+
 
 def book_view(request, book_title):
     # Retrieve the specific book based on the title
@@ -33,6 +39,41 @@ def book_view(request, book_title):
 
     return render(request, 'eLibrary/book.html', {'book': book})
 
+
+def add_book(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        author = request.POST['author']
+        isbn = request.POST['isbn']
+        genre = request.POST['genre']
+        publish_date = datetime.strptime(request.POST['publish_date'], '%Y-%m-%d').date()
+        
+        # Create a new book object
+        book = Book(title=title, author=author, isbn=isbn, genre=genre, publish_date=publish_date)
+        book.save()
+
+        return redirect('eLibrary:book_view', book_title=book.title)
+    
+    return render(request, 'eLibrary/add_book.html')
+
+
+def update_book(request, book_title):
+    book = get_object_or_404(Book, title=book_title)
+
+    if request.method == 'POST':
+        # updating the book
+        book.title = request.POST['title']
+        book.author = request.POST['author']
+        book.isbn = request.POST['isbn']
+        book.genre = request.POST['genre']
+        book.publish_date = datetime.strptime(request.POST['publish_date'], '%Y-%m-%d').date()
+        book.save()
+
+        return redirect('eLibrary:book_view', book_title=book.title)
+    
+    return render(request, 'eLibrary/update_book.html', {
+        'book': book
+    })
 
 
 def login_view(request):
