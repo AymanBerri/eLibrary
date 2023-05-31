@@ -1,7 +1,7 @@
 {% extends 'eLibrary/layout.html' %}
 
 {% block body %}
-  <div class="container">
+  <div class="container mt-5">
     <div class="row">
       <div class="col">
         <h1>{{ book.title }}</h1>
@@ -14,8 +14,14 @@
 
         <form method="POST" action="{% url 'eLibrary:book_view' book.title %}">
           {% csrf_token %}
-          <input type="hidden" name="user_pk" value="{{ request.user.pk }}"> 
-          <input type="submit" value="Add to Watchlist" class="btn btn-primary mt-5">
+
+          {% if request.user.is_authenticated %}
+            {% if is_watchlisted %}
+              <input type="submit" value="Remove from Watchlist" class="btn btn-primary mt-5">
+            {% else %}
+              <input type="submit" value="Add to Watchlist" class="btn btn-primary mt-5">
+            {% endif %}
+          {% endif %}
         </form>
 
         <a href="{% url 'eLibrary:update_book' book.title %}" class="btn btn-secondary mt-2">Update Book</a>
@@ -23,4 +29,5 @@
     </div>
   </div>
 {% endblock %}
+
 

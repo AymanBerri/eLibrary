@@ -25,20 +25,42 @@ def home(request):
 def book_view(request, book_title):
     # Retrieve the specific book based on the title
     book = get_object_or_404(Book, title=book_title)
-
-    if request.method == 'POST':
-        print(f">>>>>>>>>>>>>>>>>>>> {request.POST}")
-        # Get the user's profile
+    
+    # Check if the book is already in the user's watchlist
+    is_watchlisted = False
+    if request.user.is_authenticated:
         user_profile = Profile.objects.get(user=request.user)
+        if book in user_profile.my_books.all():
+            is_watchlisted = True
+    
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            user_profile = Profile.objects.get(user=request.user)
+            
+            if is_watchlisted:
+                # Remove the book from the user's watchlist
+                user_profile.my_books.remove(book)
+                is_watchlisted = False
+            else:
+                # Add the book to the user's watchlist
+                user_profile.my_books.add(book)
+                is_watchlisted = True
 
-        # Add the book to the user's my_books
-        user_profile.my_books.add(book)
-        messages.success(request, 'Book added to your watchlist.')
+    
+    return render(request, 'eLibrary/book.html', {
+        'book': book,
+        'is_watchlisted': is_watchlisted,
+    })
 
-        return redirect('eLibrary:home')
 
-    return render(request, 'eLibrary/book.html', {'book': book})
 
+def watchlist_view(request):
+    if request.user.is_authenticated:
+        books = request.user.profile.my_books.all()
+    else:
+        books = []
+
+    return render(request, 'eLibrary/home.html', {'books': books})
 
 def add_book(request):
     if request.method == 'POST':
