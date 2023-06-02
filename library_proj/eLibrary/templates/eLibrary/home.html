@@ -10,7 +10,7 @@
                 {% if forloop.counter0|divisibleby:5 %}
                     <tr>  <!-- Start a new row after every 5 books -->
                 {% endif %}
-                <td title="{{ book.genre }}"><a href="{% url 'eLibrary:book_view' book.title %}">{{ book.title }}</a></td>
+                <td title="{{ book.description }}&#10;Author: {{ book.author }}"><a href="{% url 'eLibrary:book_view' book.title %}">{{ book.title }}</a></td>
                 {% if forloop.counter|divisibleby:5 or forloop.last %}
                     </tr>  <!-- Close the row after every 5 books or if it's the last book -->
                 {% endif %}

@@ -65,13 +65,14 @@ def watchlist_view(request):
 def add_book(request):
     if request.method == 'POST':
         title = request.POST['title']
+        description = request.POST['description']
         author = request.POST['author']
         isbn = request.POST['isbn']
         genre = request.POST['genre']
         publish_date = datetime.strptime(request.POST['publish_date'], '%Y-%m-%d').date()
         
         # Create a new book object
-        book = Book(title=title, author=author, isbn=isbn, genre=genre, publish_date=publish_date)
+        book = Book(title=title, description=description, author=author, isbn=isbn, genre=genre, publish_date=publish_date)
         book.save()
 
         return redirect('eLibrary:book_view', book_title=book.title)
@@ -85,6 +86,7 @@ def update_book(request, book_title):
     if request.method == 'POST':
         # updating the book
         book.title = request.POST['title']
+        book.description = request.POST['description']
         book.author = request.POST['author']
         book.isbn = request.POST['isbn']
         book.genre = request.POST['genre']

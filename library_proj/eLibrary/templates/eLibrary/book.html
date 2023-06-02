@@ -5,7 +5,13 @@
     <div class="row">
       <div class="col">
         <h1>{{ book.title }}</h1>
-        <p class="mt-4"><strong>Author:</strong> {{ book.author }}</p>
+
+        <br>
+
+        {% if book.description %}
+          <p><strong>Description:</strong> {{ book.description }}</p>
+        {% endif %}
+        <p><strong>Author:</strong> {{ book.author }}</p>
         <p><strong>ISBN:</strong> {{ book.isbn }}</p>
         <p><strong>Genre:</strong> {{ book.genre }}</p>
         <p><strong>Publish Date:</strong> {{ book.publish_date }}</p>
