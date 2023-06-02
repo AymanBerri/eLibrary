@@ -12,8 +12,8 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/">
-            <img src="library_proj\eLibrary_logo.png" alt="Library App Logo" height="30" class="d-inline-block align-top">
+        <a class="navbar-brand" href="{% url 'eLibrary:home' %}">
+            <img src="{% static 'eLibrary/eLibrary.jpg' %}" alt="Library App Logo" height="30" class="d-inline-block align-top">
             eLibrary
         </a>
         <ul class="navbar-nav">

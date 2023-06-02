@@ -115,9 +115,9 @@ def update_book(request, book_title):
             # exclude removes the current book using the primary key
             # exists check if any other book remains
         if Book.objects.filter(title=title).exclude(pk=book.pk).exists():
-            error_message = 'A book with the same title already exists. Title set to original value.'
+            error_message = 'A book with the same title already exists. Title set back to original value.'
         elif Book.objects.filter(isbn=isbn).exclude(pk=book.pk).exists():
-            error_message = 'A book with the same ISBN already exists. ISBN set to original value.'
+            error_message = 'A book with the same ISBN already exists. ISBN set back to original value.'
         else:
             # Update the book if it is unique
             book.title = title
