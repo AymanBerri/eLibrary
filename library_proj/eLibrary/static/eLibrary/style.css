@@ -5,20 +5,23 @@
     height: 100vh;
   }
   
-  .item-table {
-    
-    border-collapse: collapse;
-    margin: 0 auto;
-  }
-  
-  .item-table td {
-    font-weight: bold;
-    font-size: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
+.item-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
 
-  .item-table td:hover {
-    background-color: #f2f2f2; 
-  }
+.item-table td {
+  width: 50px;
+  word-wrap: break-word;
+  font-weight: bold;
+  font-size: 40px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  text-align: center;
+  white-space: normal; /* Add this to allow multiple lines of text */
+}
+
+.item-table td:hover {
+  background-color: #f2f2f2; 
+}
+

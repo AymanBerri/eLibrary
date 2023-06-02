@@ -167,28 +167,36 @@ def login_view(request):
 
 
 def register_view(request):
+    error_message = None  # Initialize error_message
+    form_data = request.POST.copy()  # Create a copy of POST data
+
     if request.method == 'POST':
         username = request.POST['username']
-        password = request.POST['password']
         email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = form_data['confirm_password']
 
-        # Check if the username already exists
+
+         # Check if the username already exists
         if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username is already taken.')
-            return render(request, 'eLibrary/register.html')
+            error_message = 'Username is already taken.'
 
-        # Create a new user
-        user = User.objects.create_user(username=username, password=password, email=email)
+        # Check if the email already exists
+        elif User.objects.filter(email=email).exists():
+            error_message = 'Email is already registered.'
 
-        # Create a new profile for the user
-        profile = Profile.objects.create(user=user, email=email)
+         # Check if the password and confirm_password match
+        elif password != confirm_password:
+            error_message = 'Password does not match.'
 
-        # # Optionally, you can perform additional tasks such as login the user
-        login(request, user)
+        # If no errors, create a new user and profile
+        else:
+            user = User.objects.create_user(username=username, password=password, email=email) # create new user
+            Profile.objects.create(user=user, email=email)  #Create new profile for the user
+            login(request, user)    # log him in
+            return redirect('eLibrary:home')    # go to home
 
-        # Redirect to the home page
-        return redirect('eLibrary:home')
-
-    else:
-        return render(request, 'eLibrary/register.html')
-
+    return render(request, 'eLibrary/register.html', {
+        'error_message': error_message,
+        'form_data': form_data, #so the user doesn't retype everytihing again.
+        })

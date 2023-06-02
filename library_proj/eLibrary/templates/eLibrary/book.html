@@ -16,8 +16,6 @@
         <p><strong>Genre:</strong> {{ book.genre }}</p>
         <p><strong>Publish Date:</strong> {{ book.publish_date }}</p>
 
-        <p><strong>Logged-in User:</strong> {{ request.user.username }}</p>
-
         <form method="POST" action="{% url 'eLibrary:book_view' book.title %}">
           {% csrf_token %}
 
