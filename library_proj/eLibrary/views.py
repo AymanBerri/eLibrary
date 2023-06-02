@@ -102,19 +102,41 @@ def update_book(request, book_title):
     book = get_object_or_404(Book, title=book_title)
 
     if request.method == 'POST':
-        # updating the book
-        book.title = request.POST['title']
-        book.description = request.POST['description']
-        book.author = request.POST['author']
-        book.isbn = request.POST['isbn']
-        book.genre = request.POST['genre']
-        book.publish_date = datetime.strptime(request.POST['publish_date'], '%Y-%m-%d').date()
-        book.save()
+        # setting the variables
+        title = request.POST['title']
+        description = request.POST['description']
+        author = request.POST['author']
+        isbn = request.POST['isbn']
+        genre = request.POST['genre']
+        publish_date = datetime.strptime(request.POST['publish_date'], '%Y-%m-%d').date()
 
-        return redirect('eLibrary:book_view', book_title=book.title)
+        # Check if the new title and ISBN are unique
+            # filter gets all books with same title
+            # exclude removes the current book using the primary key
+            # exists check if any other book remains
+        if Book.objects.filter(title=title).exclude(pk=book.pk).exists():
+            error_message = 'A book with the same title already exists. Title set to original value.'
+        elif Book.objects.filter(isbn=isbn).exclude(pk=book.pk).exists():
+            error_message = 'A book with the same ISBN already exists. ISBN set to original value.'
+        else:
+            # Update the book if it is unique
+            book.title = title
+            book.description = description
+            book.author = author
+            book.isbn = isbn
+            book.genre = genre
+            book.publish_date = publish_date
+            book.save()
+
+            return redirect('eLibrary:book_view', book_title=book.title)
+    
+    else:
+        # There is no error
+        error_message = None
     
     return render(request, 'eLibrary/update_book.html', {
-        'book': book
+        'book': book,
+        'error_message': error_message
     })
 
 
