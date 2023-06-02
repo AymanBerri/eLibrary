@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -71,11 +72,28 @@ def add_book(request):
         genre = request.POST['genre']
         publish_date = datetime.strptime(request.POST['publish_date'], '%Y-%m-%d').date()
         
-        # Create a new book object
-        book = Book(title=title, description=description, author=author, isbn=isbn, genre=genre, publish_date=publish_date)
-        book.save()
+        # this try block enforces the unique constraint.
+        try:
+            book = Book.objects.create(title=title, description=description, author=author, isbn=isbn, genre=genre, publish_date=publish_date)
+            return redirect('eLibrary:book_view', book_title=book.title)
+        except IntegrityError as e:
+            if 'title' in str(e):
+                error_message = 'A book with this title already exists.'
+            elif 'isbn' in str(e):
+                error_message = 'A book with this ISBN already exists.'
+            else:
+                error_message = 'An error occurred while adding the book.'
 
-        return redirect('eLibrary:book_view', book_title=book.title)
+            # Pass all the info again, so the user doesn't have to retype everything.
+            return render(request, 'eLibrary/add_book.html', {
+                'error_message': error_message,
+                'title': title,
+                'description': description,
+                'author': author,
+                'isbn': isbn,
+                'genre': genre,
+                'publish_date': publish_date.strftime('%Y-%m-%d')
+            })
     
     return render(request, 'eLibrary/add_book.html')
 

@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Book(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, unique=True)
     author = models.CharField(max_length=100, default="Unknown")
-    isbn = models.CharField(max_length=20, default="N/A")
+    isbn = models.CharField(max_length=20, default="N/A", unique=True)
     genre = models.CharField(max_length=50, default="Unknown")
     description = models.TextField(blank=True, null=True)
     publish_date = models.DateField()
